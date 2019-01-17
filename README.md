@@ -1,4 +1,4 @@
-# Webix-app
+# WebixJet-app
 
 Date | Task | Presentation | Status
 --- | --- | --- | ---
