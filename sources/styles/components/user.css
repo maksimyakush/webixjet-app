@@ -1,0 +1,20 @@
+.webix_list_item .user {
+    height: 100%;
+    display: grid;
+    grid-template-columns: min-content 1fr min-content;
+    grid-column-gap: 1rem;
+    align-items: center;
+}
+
+.webix_list_item .user__img {
+    border-radius: 50%;
+}
+
+.webix_list_item .user .wxi-close:hover {
+    opacity: .7;
+}
+
+.webix_list_item .user .wxi-close:active {
+    opacity: .7;
+    transform: translateY(1px);
+}
