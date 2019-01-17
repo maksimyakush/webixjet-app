@@ -1,31 +1,5 @@
-Webix Jet Demo App
-===================
+# Webix-app
 
-### How to run
-
-- run ```npm install```
-- run ```npm start```
-- open ```http://localhost:8080```
-
-For more details, check https://www.gitbook.com/book/webix/webix-jet/details
-
-### Other commands
-
-#### Run lint
-
-```
-npm run lint
-```
-
-#### Build production files
-
-```
-npm run build
-```
-
-After that you can copy the "codebase" folder to the production server
-
-
-### License
-
-MIT
+Date | Task | Presentation | Status
+--- | --- | --- | ---
+01/17  | [Task Description](https://docs.google.com/document/d/126HOCa4oqvtgEFpZYKJEHZ04Tlfmq0HJ6s-CyUBMgBk/edit) | [Presentation](https://slides.com/ihelga/webixjet-views/#/) | :heavy_check_mark:
