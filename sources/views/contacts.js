@@ -1,5 +1,6 @@
-import { JetView } from "webix-jet";
+import { JetView, JetApp, plugins } from "webix-jet";
 import { contacts } from "../models/contacts";
+import Form from "./form";
 
 export default class ContactsView extends JetView {
 	config() {
@@ -11,13 +12,25 @@ export default class ContactsView extends JetView {
 
 		const contactsList = {
 			view: "list",
-			localId: "contacts:contactsList",
+			localId: "contacts:list",
 			layout: "y",
 			scroll: "",
 			type: {
 				height: 100
 			},
 			select: true,
+			on: {
+				onAfterSelect() {
+					const selectedId = this.getSelectedId();
+					this.$scope.setParam("id", String(selectedId), true);
+				}
+			},
+			onClick: {
+				"wxi-close"(e, id) {
+					this.remove(id);
+					return false;
+				}
+			},
 			template: `<div class='user'>
                     <img class='user__img' src='//unsplash.it/50/50'>
                     <div class="user__info">
@@ -28,26 +41,17 @@ export default class ContactsView extends JetView {
                 </div>`
 		};
 
-		const contactsForm = {
-			view: "form",
-			localId: "contacts:contactsForm",
-			autoheight: false,
-			paddingX: 20,
-			elements: [
-				{ view: "text", label: "User Name" },
-				{ view: "text", label: "Email" }
-			],
-			elementsConfig: {
-				labelPosition: "top"
-			}
-		};
-
 		return {
 			css: "webix_shadow_medium",
-			cols: [{ rows: [contactsHeader, contactsList] }, contactsForm]
+			cols: [{ rows: [contactsHeader, contactsList] }, new Form(this.app, "")]
 		};
 	}
-	init(view) {
-		view.queryView({ localId: "contacts:contactsList" }).parse(contacts);
+
+	init() {
+		const listView = this.$$("contacts:list");
+		listView.parse(contacts);
+		const firstId = contacts.getFirstId();
+		listView.select(firstId);
+		this.setParam("id", String(firstId), true);
 	}
 }

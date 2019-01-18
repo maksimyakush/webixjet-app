@@ -10,7 +10,6 @@ export default class ContactsView extends JetView {
 
 		const segmentedData = {
 			view: "segmented",
-			multiview: true,
 			options: ["RU", "EN"]
 		};
 
@@ -19,12 +18,6 @@ export default class ContactsView extends JetView {
 			rows: [
 				headerData,
 				segmentedData,
-				{
-					cells: [
-						{ id: "RU", template: "RU" },
-						{ id: "EN", template: "EN" }
-					]
-				}
 			]
 		};
 	}
