@@ -4,8 +4,10 @@ import Form from "./form";
 
 export default class ContactsView extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
+
 		const contactsHeader = {
-			template: "Contacts",
+			template: _("Contacts"),
 			type: "header",
 			css: "webix_header app_header"
 		};

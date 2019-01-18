@@ -9,6 +9,8 @@ export default class Form extends JetView {
 	}
 
 	config() {
+		const _ = this.app.getService("locale")._;
+
 		let countriesArr = [];
 		countries.data.each(item => {
 			countriesArr.push(item["Full Name"]);
@@ -27,28 +29,28 @@ export default class Form extends JetView {
 			elements: [
 				{
 					view: "text",
-					label: "User Name",
+					label: _("User Name"),
 					name: "name"
 				},
 				{
 					view: "text",
-					label: "Email",
+					label: _("Email"),
 					name: "email"
 				},
 				{
 					view: "combo",
-					label: "Countries",
+					label: _("Countries"),
 					options: countriesArr
 				},
 				{
 					view: "combo",
-					label: "Statuses",
+					label: _("Statuses"),
 					options: statusesArr
 				},
 
 				{
 					view: "button",
-					value: "Save",
+					value: _("Save"),
 					click: () => {
 						const form = this.$$("form");
 						if (!form.getValues().id) {

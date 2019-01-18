@@ -1,24 +1,37 @@
 import { JetView } from "webix-jet";
 
 export default class ContactsView extends JetView {
+	toggleLanguage() {
+		const langs = this.app.getService("locale");
+		const value = this.getRoot()
+			.queryView({ name: "lang" })
+			.getValue();
+		langs.setLang(value);
+	}
+
 	config() {
+		const _ = this.app.getService("locale")._;
+
 		const headerData = {
-			template: "Settings",
+			template: _("Settings"),
 			type: "header",
 			css: "webix_header app_header"
 		};
-
+		const lang = this.app.getService("locale").getLang();
 		const segmentedData = {
 			view: "segmented",
-			options: ["RU", "EN"]
+			name: "lang",
+			options: [
+				{ id: "en", value: _("English") },
+				{ id: "es", value: _("Spanish") }
+			],
+			click: () => this.toggleLanguage(),
+			value: lang
 		};
 
 		return {
 			css: "webix_shadow_medium",
-			rows: [
-				headerData,
-				segmentedData,
-			]
+			rows: [headerData, segmentedData]
 		};
 	}
 }

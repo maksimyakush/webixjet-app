@@ -8,22 +8,27 @@ export default class CommonData extends JetView {
 	}
 
 	getColumnsData() {
+		const _ = this.app.getService("locale")._;
+
 		return this.columns
 			.map((name, i) => ({
 				id: name,
-				header: name,
+				header: _(name),
 				fillspace: i
 			}))
 			.concat({ template: "{common.trashIcon()}" });
 	}
 
 	getTextViews() {
+		const _ = this.app.getService("locale")._;
+
 		return this.columns.map(name => {
-			return { view: "text", name, placeholder: name };
+			return { view: "text", name, placeholder: _(name) };
 		}, []);
 	}
 
 	config() {
+		const _ = this.app.getService("locale")._;
 		return {
 			rows: [
 				{
@@ -36,6 +41,7 @@ export default class CommonData extends JetView {
 					onClick: {
 						"wxi-trash"(e, id) {
 							this.remove(id);
+							this.$scope.getRoot().queryView("form").clear();
 							return false;
 						}
 					},
@@ -52,7 +58,7 @@ export default class CommonData extends JetView {
 						...this.getTextViews(),
 						{
 							view: "button",
-							value: "Save",
+							value: _("Save"),
 							click: () => {
 								const form = this.getRoot().queryView("form");
 								const grid = this.getRoot().queryView("datatable");

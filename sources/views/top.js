@@ -2,6 +2,7 @@ import { JetView, plugins } from "webix-jet";
 
 export default class TopView extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const header = {
 			type: "header",
 			template: this.app.config.name,
@@ -15,7 +16,8 @@ export default class TopView extends JetView {
 			width: 180,
 			layout: "y",
 			select: true,
-			template: "<span class='webix_icon #icon#'></span> #value# ",
+			template: obj =>
+				`<span class='webix_icon #icon#'></span> ${_(obj.value)} `,
 			data: [
 				{ value: "Contacts", id: "contacts", icon: "wxi-columns" },
 				{ value: "Data", id: "data", icon: "wxi-folder" },

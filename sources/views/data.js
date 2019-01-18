@@ -26,6 +26,7 @@ export default class DataView extends JetView {
 	}
 
 	config() {
+		const _ = this.app.getService("locale")._;
 		const headerData = {
 			template: "Data",
 			type: "header",
@@ -35,14 +36,11 @@ export default class DataView extends JetView {
 		const segmentedData = {
 			view: "segmented",
 			multiview: true,
-			options: ["Countries", "Statuses"],
-			on: {
-				onAfterTabClick() {}
-			}
+			options: [_("Countries"), _("Statuses")]
 		};
 
 		const countriesCell = {
-			id: "Countries",
+			id: _("Countries"),
 			margin: 100,
 			padding: 100,
 			cols: [
@@ -57,7 +55,7 @@ export default class DataView extends JetView {
 		};
 
 		const statusesCell = {
-			id: "Statuses",
+			id: _("Statuses"),
 			margin: 100,
 			padding: 100,
 			cols: [
