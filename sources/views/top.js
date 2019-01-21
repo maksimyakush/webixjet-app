@@ -16,12 +16,11 @@ export default class TopView extends JetView {
 			width: 180,
 			layout: "y",
 			select: true,
-			template: obj =>
-				`<span class='webix_icon #icon#'></span> ${_(obj.value)} `,
+			template: "<span class='webix_icon #icon#'></span> #value# ",
 			data: [
-				{ value: "Contacts", id: "contacts", icon: "wxi-columns" },
-				{ value: "Data", id: "data", icon: "wxi-folder" },
-				{ value: "Settings", id: "settings", icon: "wxi-pencil" }
+				{ value: _("Contacts"), id: "editcontacts", icon: "wxi-columns" },
+				{ value: _("Data"), id: "data", icon: "wxi-folder" },
+				{ value: _("Settings"), id: "settings", icon: "wxi-pencil" }
 			]
 		};
 
@@ -35,12 +34,7 @@ export default class TopView extends JetView {
 					paddingY: 10,
 					rows: [{ css: "webix_shadow_medium", rows: [header, menu] }]
 				},
-				{
-					type: "wide",
-					paddingY: 10,
-					paddingX: 5,
-					rows: [{ $subview: true }]
-				}
+				{ type: "wide", paddingY: 10, paddingX: 5, rows: [{ $subview: true }] }
 			]
 		};
 

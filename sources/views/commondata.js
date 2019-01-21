@@ -1,22 +1,23 @@
 import { JetView } from "webix-jet";
 
-export default class CommonData extends JetView {
+export default class CommonDataView extends JetView {
 	constructor(app, name, data, columns) {
 		super(app, name);
 		this._tdata = data;
 		this.columns = columns;
 	}
 
-	getColumnsData() {
+	getColumns() {
 		const _ = this.app.getService("locale")._;
 
 		return this.columns
 			.map((name, i) => ({
 				id: name,
 				header: _(name),
-				fillspace: i
+				editor: "text",
+				fillspace: i + 1
 			}))
-			.concat({ template: "{common.trashIcon()}" });
+			.concat({ template: "{common.trashIcon()}", adjust: true });
 	}
 
 	getTextViews() {
@@ -24,60 +25,45 @@ export default class CommonData extends JetView {
 
 		return this.columns.map(name => {
 			return { view: "text", name, placeholder: _(name) };
-		}, []);
+		});
 	}
 
 	config() {
 		const _ = this.app.getService("locale")._;
-		return {
-			rows: [
+
+		const datatable = {
+			view: "datatable",
+			localId: "datatable",
+			select: true,
+			editable: true,
+			editaction: "dblclick",
+			scroll: "y",
+			columns: this.getColumns(),
+			onClick: {
+				"wxi-trash": (e, id) => {
+					this._tdata.remove(id);
+					return false;
+				}
+			}
+		};
+		const form = {
+			view: "form",
+			elements: [
+				...this.getTextViews(),
 				{
-					view: "datatable",
-					editable: true,
-					select: true,
-					editaction: "dblclick",
-					scroll: "y",
-					columns: this.getColumnsData(),
-					onClick: {
-						"wxi-trash"(e, id) {
-							this.remove(id);
-							this.$scope.getRoot().queryView("form").clear();
-							return false;
-						}
-					},
-					on: {
-						onAfterSelect(id) {
-							const form = this.$scope.getRoot().queryView("form");
-							form.setValues(this.getItem(id));
-						}
+					view: "button",
+					value: _("Add"),
+					click() {
+						this.$scope._tdata.add(this.getFormView().getValues());
+						this.getFormView().clear();
 					}
-				},
-				{
-					view: "form",
-					elements: [
-						...this.getTextViews(),
-						{
-							view: "button",
-							value: _("Save"),
-							click: () => {
-								const form = this.getRoot().queryView("form");
-								const grid = this.getRoot().queryView("datatable");
-								if (!form.getValues().id) {
-									grid.add(form.getValues());
-								} else {
-									grid.updateItem(form.getValues().id, form.getValues());
-								}
-								form.clear();
-								grid.unselectAll();
-							}
-						}
-					]
 				}
 			]
 		};
-	}
 
-	init(view) {
-		view.queryView("datatable").parse(this._tdata);
+		return { rows: [datatable, form] };
+	}
+	init() {
+		this.$$("datatable").sync(this._tdata);
 	}
 }

@@ -1,59 +1,70 @@
-import { JetView, JetApp, plugins } from "webix-jet";
+import { JetView } from "webix-jet";
 import { contacts } from "../models/contacts";
-import Form from "./form";
 
 export default class ContactsView extends JetView {
 	config() {
 		const _ = this.app.getService("locale")._;
 
-		const contactsHeader = {
-			template: _("Contacts"),
-			type: "header",
-			css: "webix_header app_header"
+		const contactsLabel = {
+			view: "label",
+			label: _("Contacts")
+		};
+
+		const addButton = {
+			view: "button",
+			value: _("Add"),
+			click: () =>
+				contacts.add({
+					Name: "Maksim",
+					Email: "maksim@mail.com",
+					Status: 1,
+					Country: 1
+				})
 		};
 
 		const contactsList = {
 			view: "list",
-			localId: "contacts:list",
-			layout: "y",
-			scroll: "",
+			localId: "contacts",
 			type: {
 				height: 100
 			},
-			select: true,
 			on: {
-				onAfterSelect() {
-					const selectedId = this.getSelectedId();
-					this.$scope.setParam("id", String(selectedId), true);
+				onAfterSelect(id) {
+					this.$scope.app.callEvent("contacts:afterselect", [id]);
 				}
 			},
+			select: true,
 			onClick: {
-				"wxi-close"(e, id) {
-					this.remove(id);
+				"wxi-close": (e, id) => {
+					if (id == this.$$("contacts").getSelectedId())
+						this.app.callEvent("contacts:afterdelete");
+					contacts.remove(id);
 					return false;
 				}
 			},
 			template: `<div class='user'>
                     <img class='user__img' src='//unsplash.it/50/50'>
                     <div class="user__info">
-                        <div>#name#</div>
-                        <div>#email#</div>
+                        <div>#Name#</div>
+                        <div>#Email#</div>
                     </div>
                     <i class="webix_icon wxi-close"></i>
                 </div>`
 		};
 
-		return {
-			css: "webix_shadow_medium",
-			cols: [{ rows: [contactsHeader, contactsList] }, new Form(this.app, "")]
-		};
+		return { type: "space", rows: [contactsLabel, contactsList, addButton] };
+	}
+
+	ready() {
+		if (!this.getParam("id")) {
+			const firstListItemId = contacts.getFirstId();
+			this.$$("contacts").select(firstListItemId);
+		} else {
+			this.$$("contacts").select(this.getParam("id"));
+		}
 	}
 
 	init() {
-		const listView = this.$$("contacts:list");
-		listView.parse(contacts);
-		const firstId = contacts.getFirstId();
-		listView.select(firstId);
-		this.setParam("id", String(firstId), true);
+		this.$$("contacts").parse(contacts);
 	}
 }

@@ -1,30 +1,9 @@
 import { JetView } from "webix-jet";
-import CommonData from "./commondata";
-import { countries } from "../models/countries";
-import { statuses } from "../models/statuses";
+import { countries } from "models/countries";
+import { statuses } from "models/statuses";
+import CommonData from "views/commondata";
 
 export default class DataView extends JetView {
-	addItem(collection, form) {
-		collection.add(form.getValues());
-		form.clear();
-	}
-
-	getCustomDatatable(collection) {
-		return {
-			view: "datatable",
-			editable: true,
-			select: true,
-			editaction: "dblclick",
-			scroll: "y",
-			onClick: {
-				removeItem(e, id) {
-					collection.remove(id);
-					return false;
-				}
-			}
-		};
-	}
-
 	config() {
 		const _ = this.app.getService("locale")._;
 		const headerData = {
@@ -46,10 +25,7 @@ export default class DataView extends JetView {
 			cols: [
 				{
 					localId: "data:countries",
-					$subview: new CommonData(this.app, "", countries, [
-						"Short Name",
-						"Full Name"
-					])
+					$subview: new CommonData(this.app, "", countries, ["Name"])
 				}
 			]
 		};
@@ -61,7 +37,7 @@ export default class DataView extends JetView {
 			cols: [
 				{
 					localId: "data:statuses",
-					$subview: new CommonData(this.app, "", statuses, ["name", "icon"])
+					$subview: new CommonData(this.app, "", statuses, ["Name", "Icon"])
 				}
 			]
 		};

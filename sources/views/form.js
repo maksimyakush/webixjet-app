@@ -1,76 +1,83 @@
-import { JetView, JetApp, plugins } from "webix-jet";
+import { JetView } from "webix-jet";
 import { contacts } from "../models/contacts";
-import { countries } from "../models/countries";
 import { statuses } from "../models/statuses";
+import { countries } from "../models/countries";
 
-export default class Form extends JetView {
-	constructor(app, name) {
-		super(app, name);
-	}
-
+export default class FormView extends JetView {
 	config() {
 		const _ = this.app.getService("locale")._;
 
-		let countriesArr = [];
-		countries.data.each(item => {
-			countriesArr.push(item["Full Name"]);
-		});
-
-		let statusesArr = [];
-		statuses.data.each(item => {
-			statusesArr.push(item["name"]);
-		});
-
-		return {
+		const form = {
 			view: "form",
 			localId: "form",
+			width: 300,
 			autoheight: false,
 			paddingX: 20,
 			elements: [
 				{
 					view: "text",
 					label: _("User Name"),
-					name: "name"
+					name: "Name",
+					labelPosition: "top"
 				},
 				{
 					view: "text",
 					label: _("Email"),
-					name: "email"
+					name: "Email",
+					labelPosition: "top"
 				},
 				{
 					view: "combo",
-					label: _("Countries"),
-					options: countriesArr
+					label: _("Country"),
+					name: "Country",
+					options: {
+						body: {
+							data: countries,
+							template: obj => _(obj.Name)
+						}
+					}
 				},
 				{
 					view: "combo",
-					label: _("Statuses"),
-					options: statusesArr
+					label: _("Status"),
+					options: {
+						body: {
+							data: statuses,
+							template: obj =>
+								`<i class='webix_icon wxi-${obj["Icon"]}'></i>${_(obj.Name)}`
+						}
+					},
+					name: "Status"
 				},
-
 				{
 					view: "button",
+					localId: "form:button",
 					value: _("Save"),
-					click: () => {
-						const form = this.$$("form");
-						if (!form.getValues().id) {
-							contacts.add(form.getValues());
-						} else {
-							contacts.updateItem(form.getValues().id, form.getValues());
-						}
-						form.clear();
+					width: 150,
+					align: "right",
+					click() {
+						contacts.updateItem(
+							this.$scope.getParam("id"),
+							this.getFormView().getValues()
+						);
 					}
 				}
-			],
-			elementsConfig: {
-				labelPosition: "top"
-			}
+			]
 		};
+		return form;
 	}
 
-	urlChange(view, url) {
-		if (url[0].params.id) {
-			this.$$("form").setValues(contacts.getItem(url[0].params.id));
-		}
+	init(view) {
+		this.on(this.app, "contacts:afterselect", id => {
+			if (contacts.exists(id)) {
+				this.$$("form:button").enable();
+				view.setValues(contacts.getItem(id));
+				this.setParam("id", id, true);
+			}
+		});
+		this.on(this.app, "contacts:afterdelete", () => {
+			view.clear();
+			this.$$("form:button").disable();
+		});
 	}
 }

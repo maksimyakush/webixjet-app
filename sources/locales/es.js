@@ -4,6 +4,8 @@ export default {
 	Settings: "Ajustes",
 	Save: "Guardar",
 	Countries: "Paises",
+	Country: "Pais",
+	Status: "Estatus",
 	Statuses: "Estatuses",
 	"User Name": "Nombre de Usuario",
 	Email: "Correo",
@@ -13,7 +15,12 @@ export default {
 	"Short Name": "Nombre Corto",
 	"Full Name": "Nombre Completo",
 	name: "nombre",
-	icon: "icono",
+	Icon: "Icono",
 	English: "Ingles",
-	Spanish: "Espanol"
+	Spanish: "Espanol",
+	Add: "Anadir",
+	USA: "Estados Unidos",
+	Italy: "Italia",
+	Busy: "Ocupado",
+	Open: "Abierto"
 };
