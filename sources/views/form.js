@@ -13,18 +13,24 @@ export default class FormView extends JetView {
 			width: 300,
 			autoheight: false,
 			paddingX: 20,
+			rules: {
+				Name: webix.rules.isNotEmpty,
+				Email: value => value.includes("@") && value.length >= 5
+			},
 			elements: [
 				{
 					view: "text",
 					label: _("User Name"),
 					name: "Name",
-					labelPosition: "top"
+					labelPosition: "top",
+					invalidMessage: "Name can not be empty"
 				},
 				{
 					view: "text",
 					label: _("Email"),
 					name: "Email",
-					labelPosition: "top"
+					labelPosition: "top",
+					invalidMessage: "Email should be consisted of @ and >4 letters"
 				},
 				{
 					view: "combo",
@@ -56,10 +62,28 @@ export default class FormView extends JetView {
 					width: 150,
 					align: "right",
 					click() {
-						contacts.updateItem(
-							this.$scope.getParam("id"),
-							this.getFormView().getValues()
-						);
+						if (!this.getFormView().validate()) return;
+						if (!contacts.exists(this.$scope.getParam("id"))) {
+							contacts.add(this.getFormView().getValues());
+							this.getFormView().clear();
+						} else {
+							contacts.updateItem(
+								this.$scope.getParam("id"),
+								this.getFormView().getValues()
+							);
+						}
+						this.getFormView().clearValidation();
+					}
+				},
+				{
+					view: "button",
+					value: "Unselect",
+					click() {
+						this.$scope.app.callEvent("contacts:unselect");
+						this.$scope.setParam("id", "", true);
+						this.getFormView().clear();
+						this.$scope.$$("form:button").setValue("Add");
+						this.getFormView().clearValidation();
 					}
 				}
 			]
@@ -67,17 +91,22 @@ export default class FormView extends JetView {
 		return form;
 	}
 
-	init(view) {
+	ready(view) {
 		this.on(this.app, "contacts:afterselect", id => {
 			if (contacts.exists(id)) {
-				this.$$("form:button").enable();
+				this.$$("form:button").setValue("Update");
 				view.setValues(contacts.getItem(id));
 				this.setParam("id", id, true);
 			}
 		});
+	}
+
+	init(view) {
+		if (!contacts.count()) this.$$("form:button").setValue("Add");
 		this.on(this.app, "contacts:afterdelete", () => {
 			view.clear();
-			this.$$("form:button").disable();
+			this.$$("form:button").setValue("Add");
+			this.setParam("id", "", true);
 		});
 	}
 }
