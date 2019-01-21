@@ -53,6 +53,7 @@ export default class ContactsView extends JetView {
 		webix.promise
 			.all([contacts.waitData, countries.waitData, statuses.waitData])
 			.then(() => {
+				if(!contacts.exist(this.getParam("id"))) return;
 				if (!this.getParam("id")) {
 					const firstListItemId = contacts.getFirstId();
 					this.$$("contacts").select(firstListItemId);
